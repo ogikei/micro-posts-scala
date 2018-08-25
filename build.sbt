@@ -1,3 +1,6 @@
+import com.typesafe.config.{Config, ConfigFactory}
+import scala.collection.JavaConverters._
+
 name := """micro-posts"""
 organization := "com.example"
 
@@ -27,3 +30,18 @@ libraryDependencies ++= Seq(
 
 // Adds additional packages into conf/routes
 // play.sbt.routes.RoutesKeys.routesImport += "com.example.binders._"
+
+
+// 中略
+lazy val envConfig = settingKey[Config]("env-config")
+
+envConfig := {
+  val env = sys.props.getOrElse("env", "dev")
+  ConfigFactory.parseFile(file("env") / (env + ".conf"))
+}
+
+flywayLocations := envConfig.value.getStringList("flywayLocations").asScala
+flywayDriver := envConfig.value.getString("jdbcDriver")
+flywayUrl := envConfig.value.getString("jdbcUrl")
+flywayUser := envConfig.value.getString("jdbcUserName")
+flywayPassword := envConfig.value.getString("jdbcPassword")

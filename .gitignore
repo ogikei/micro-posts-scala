@@ -1,5 +1,8 @@
 # ignore target
-target
+target/
 
 # ignore IntelliJ
-.idea
+.idea/
+
+# ignore env
+env/
