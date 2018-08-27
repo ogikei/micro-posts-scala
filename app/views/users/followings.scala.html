@@ -1,4 +1,4 @@
-@(currentUser: User, user: User, userFollows: List[UserFollow], microPosts: PagedItems[MicroPost], followingsCount: Long, followersCount: Long)(implicit messagesProvider: MessagesProvider, flash: Flash, request: RequestHeader)
+@(currentUser: User, user: User, userFollows: List[UserFollow], followings: PagedItems[User], microPostsCount: Long, followersCount: Long)(implicit messagesProvider: MessagesProvider, flash: Flash, request: RequestHeader)
 
 @main(Messages("User"), Some(currentUser)) {
   <div class="row">
@@ -14,10 +14,8 @@
       </div>
     </aside>
     <div class="col-xs-8">
-      @views.html.users.tab(user, microPosts.totalCount, followingsCount, followersCount)
-      @if(microPosts.items.nonEmpty) {
-        @common.posts(currentUser, microPosts)
-      }
+      @views.html.users.tab(user, microPostsCount, followings.totalCount, followersCount)
+      @views.html.users.users(currentUser, followings)
     </div>
   </div>
 

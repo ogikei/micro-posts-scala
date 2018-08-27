@@ -11,8 +11,7 @@
         @otherUser.name
         </div>
         <div>
-          @* リンク先を設定する *@
-        <p><a href="@routes.UsersController.show(otherUser.id.get)">@Messages("ViewProfile")</a></p>
+        <p><a href="@routes.UsersController.show(otherUser.id.get, 1)">@Messages("ViewProfile")</a></p>
         </div>
       </div>
     </li>
