@@ -1,0 +1,18 @@
+@(currentUser: User, user: User, favorites: List[Favorite], microPosts: PagedItems[MicroPost], followingsCount: Long)(implicit messagesProvider: MessagesProvider, flash: Flash, request: RequestHeader)
+
+<ul class="media-list">
+  @for(microPost <- microPosts.items) {
+    <li class="media">
+      <div class="media-left">
+        <img class="media-object img-rounded" src="@common.gravatarUrl(microPost.user.get.email)?s=50&amp;r=g&amp;d=identicon" alt="">
+      </div>
+      <div class="media-body">
+        <div>
+        @microPost.content
+        </div>
+      </div>
+    </li>
+  }
+</ul>
+
+@common.pagination(microPosts, routes.UsersController.index)
