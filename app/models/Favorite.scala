@@ -11,26 +11,26 @@ case class Favorite(id: Option[Long],
     microPostId: Long,
     createAt: ZonedDateTime = ZonedDateTime.now(),
     updateAt: ZonedDateTime = ZonedDateTime.now(),
-    user: Option[MicroPost] = None,
+    user: Option[User] = None,
     microPost: Option[MicroPost] = None)
 
 object Favorite extends SkinnyCRUDMapper[Favorite] {
 
-  lazy val m1 = MicroPost.createAlias("m1")
+  lazy val u1 = User.createAlias("u1")
 
-  lazy val userRef = belongsToWithAliasAndFkAndJoinCondition[MicroPost](
-    right = MicroPost -> m1,
+  lazy val userRef = belongsToWithAliasAndFkAndJoinCondition[User](
+    right = User -> u1,
     fk = "userId",
-    on = sqls.eq(defaultAlias.userId, m1.userId),
-    merge = (fa, f) => fa.copy(user = f)
+    on = sqls.eq(defaultAlias.userId, u1.id),
+    merge = (uf, f) => uf.copy(user = f)
   )
 
-  lazy val m2 = MicroPost.createAlias("m2")
+  lazy val m1 = MicroPost.createAlias("m1")
 
   lazy val microPostRef = belongsToWithAliasAndFkAndJoinCondition[MicroPost](
-    right = MicroPost -> m2,
+    right = MicroPost -> m1,
     fk = "micro_post_id",
-    on = sqls.eq(defaultAlias.microPostId, m2.id),
+    on = sqls.eq(defaultAlias.microPostId, m1.id),
     merge = (fa, f) => fa.copy(microPost = f)
   )
 

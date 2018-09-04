@@ -38,7 +38,7 @@ class FavoriteServiceImpl extends FavoriteService {
               pagination.offset,
               Seq(Favorite.defaultAlias.id.desc)
             )
-            .map(_.user.get)
+            .map(_.microPost.get)
       )
     }
   }
