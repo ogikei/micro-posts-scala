@@ -1,0 +1,19 @@
+@import b3.vertical.fieldConstructor
+
+@(currentUser: User, user: User, favorites: List[Favorite])(implicit messagesProvider: MessagesProvider, flash: Flash, request: RequestHeader)
+
+@if(currentUser.id.get != user.id.get) {
+  @if(!favorites.exists(_.userId == user.id.get)) {
+    @b3.formCSRF(routes.FavoriteController.favorite(user.id.get)) {
+      @b3.submit('class -> "btn btn-primary btn-block") {
+        @Messages("Favorite")
+      }
+    }
+  } else {
+    @b3.formCSRF(routes.FavoriteController.releaseFavorite(user.id.get)) {
+      @b3.submit('class -> "btn btn-primary btn-block") {
+        @Messages("ReleaseFavorite")
+      }
+    }
+  }
+}
