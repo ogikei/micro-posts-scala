@@ -1,6 +1,6 @@
 @import b3.vertical.fieldConstructor
 
-@(currentUserOpt: Option[User], postForm: Form[String], microPosts: PagedItems[MicroPost], favorites: List[Favorite])(implicit messagesProvider: MessagesProvider, flash: Flash, request: RequestHeader)
+@(currentUserOpt: Option[User], postForm: Form[String], microPosts: PagedItems[MicroPost], favoriteIds: List[Long])(implicit messagesProvider: MessagesProvider, flash: Flash, request: RequestHeader)
 
 @main(Messages("Home"), currentUserOpt) {
 
@@ -24,7 +24,7 @@
       </aside>
       <div class="col-xs-8">
       @if(microPosts.items.nonEmpty) {
-        @common.posts(currentUserOpt.get, microPosts, favorites)
+        @common.posts(currentUserOpt.get, microPosts, favoriteIds)
       }
       </div>
     </div>

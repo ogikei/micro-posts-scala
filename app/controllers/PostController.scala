@@ -64,11 +64,14 @@ class PostController @Inject()(val userService: UserService,
       user: User,
       formWithErrors: Form[String]
   )(implicit request: RequestHeader) = {
-    val favorites = favoriteService.findByUserId(user.id.get)
+    val favoriteIds: List[Long] =
+      if (user.id.isDefined) {
+        favoriteService.findByUserId(user.id.get).get.map(_.microPostId)
+      } else Nil
     microPostService
         .findAllByWithLimitOffset(Pagination(10, page), user.id.get)
         .map { pagedItems =>
-          BadRequest(views.html.index(Some(user), formWithErrors, pagedItems, favorites.get))
+          BadRequest(views.html.index(Some(user), formWithErrors, pagedItems, favoriteIds))
         }
         .recover {
           case e: Exception =>

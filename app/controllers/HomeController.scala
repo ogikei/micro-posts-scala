@@ -27,13 +27,16 @@ class HomeController @Inject()(val userService: UserService,
 
   def index(page: Int): Action[AnyContent] = StackAction { implicit request =>
     val userOpt = loggedIn
-    val favorites = favoriteService.findByUserId(userOpt.get.id.get)
+    val favoriteIds: List[Long] =
+      if (userOpt.get.id.isDefined) {
+        favoriteService.findByUserId(userOpt.get.id.get).get.map(_.microPostId)
+      } else Nil
     userOpt
         .map { user =>
           microPostService
               .findAllByWithLimitOffset(Pagination(10, page), user.id.get)
               .map { pagedItems =>
-                Ok(views.html.index(userOpt, postForm, pagedItems, favorites.getOrElse(Nil)))
+                Ok(views.html.index(userOpt, postForm, pagedItems, favoriteIds))
               }
               .recover {
                 case e: Exception =>
@@ -45,7 +48,7 @@ class HomeController @Inject()(val userService: UserService,
         }
         .getOrElse(
           Ok(views.html.index(
-            userOpt, postForm, PagedItems(Pagination(10, page), 0, Seq.empty[MicroPost]), favorites.get))
+            userOpt, postForm, PagedItems(Pagination(10, page), 0, Seq.empty[MicroPost]), favoriteIds))
         )
   }
 

@@ -20,11 +20,13 @@ class FavoritesController @Inject()(val userService: UserService,
         with AuthenticationElement {
 
   def index(page: Int): Action[AnyContent] = StackAction { implicit request =>
-    val favorites = favoriteService.findByUserId(loggedIn.id.get)
+    val favoriteIds = if (loggedIn.id.isDefined) {
+      favoriteService.findByUserId(loggedIn.id.get).get.map(_.microPostId)
+    } else Nil
     microPostService.findAllByWithLimitOffset(
       Pagination(pageSize = 10, pageNo = page), loggedIn.id.get)
         .map { microPosts =>
-          Ok(views.html.favorite.index(loggedIn, microPosts, favorites.get))
+          Ok(views.html.favorite.index(loggedIn, microPosts, favoriteIds))
         }
         .recover {
           case e: Exception =>

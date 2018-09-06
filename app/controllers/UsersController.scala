@@ -35,7 +35,9 @@ class UsersController @Inject()(val userService: UserService,
   }
 
   def show(userId: Long, page: Int) = StackAction { implicit request =>
-    val favorites = favoriteService.findByUserId(userId)
+    val favoriteIds = if (loggedIn.id.isDefined) {
+      favoriteService.findByUserId(loggedIn.id.get).get.map(_.microPostId)
+    } else Nil
     val triedUserOpt = userService.findById(userId)
     val triedUserFollows = userFollowService.findById(loggedIn.id.get)
     val pagination = Pagination(10, page)
@@ -51,7 +53,7 @@ class UsersController @Inject()(val userService: UserService,
     } yield {
       userOpt.map { user =>
         Ok(views.html.users.show(
-          loggedIn, user, userFollows, microPosts, followingsSize, followersSize, favorites.get))
+          loggedIn, user, userFollows, microPosts, followingsSize, followersSize, favoriteIds))
       }.get
     }).recover {
       case e: Exception =>
