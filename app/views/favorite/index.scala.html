@@ -2,6 +2,10 @@
 
 @main(Messages("Users"), Some(currentUser)) {
 
+  <h1>Favorites</h1>
+
+  <hr class="horizon">
+
   @views.html.favorite.favorites(currentUser, microPosts, favoriteIds)
 
 }

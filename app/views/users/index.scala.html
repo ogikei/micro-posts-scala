@@ -2,6 +2,10 @@
 
 @main(Messages("Users"), Some(currentUser)) {
 
+  <h1 class="h1">Users</h1>
+
+  <hr class="horizon">
+
   @views.html.users.users(currentUser, users)
 
 }

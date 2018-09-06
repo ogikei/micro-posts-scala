@@ -27,7 +27,7 @@ class FavoriteController @Inject()(val favoriteService: FavoriteService,
     favoriteService
         .create(favorite)
         .map { _ =>
-          Redirect(routes.HomeController.index())
+          Redirect(routes.FavoritesController.index())
         }
         .recover {
           case e: Exception =>
@@ -43,7 +43,7 @@ class FavoriteController @Inject()(val favoriteService: FavoriteService,
     favoriteService
         .deleteBy(currentUser.id.get, microPostId)
         .map { _ =>
-          Redirect(routes.HomeController.index())
+          Redirect(routes.FavoritesController.index())
         }
         .recover {
           case e: Exception =>
