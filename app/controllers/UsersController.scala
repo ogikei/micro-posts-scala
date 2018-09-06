@@ -1,20 +1,19 @@
 package controllers
 
 import javax.inject._
-
 import jp.t2v.lab.play2.auth.AuthenticationElement
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc._
 import skinny.Pagination
-
 import models.User
-import services.{MicroPostService, UserFollowService, UserService}
+import services.{FavoriteService, MicroPostService, UserFollowService, UserService}
 
 @Singleton
 class UsersController @Inject()(val userService: UserService,
     val microPostService: MicroPostService,
     val userFollowService: UserFollowService,
+    val favoriteService: FavoriteService,
     components: ControllerComponents)
     extends AbstractController(components)
         with I18nSupport
@@ -36,6 +35,7 @@ class UsersController @Inject()(val userService: UserService,
   }
 
   def show(userId: Long, page: Int) = StackAction { implicit request =>
+    val favorites = favoriteService.findByUserId(userId)
     val triedUserOpt = userService.findById(userId)
     val triedUserFollows = userFollowService.findById(loggedIn.id.get)
     val pagination = Pagination(10, page)
@@ -50,7 +50,8 @@ class UsersController @Inject()(val userService: UserService,
       followersSize <- triedFollowersSize
     } yield {
       userOpt.map { user =>
-        Ok(views.html.users.show(loggedIn, user, userFollows, microPosts, followingsSize, followersSize))
+        Ok(views.html.users.show(
+          loggedIn, user, userFollows, microPosts, followingsSize, followersSize, favorites.get))
       }.get
     }).recover {
       case e: Exception =>

@@ -1,0 +1,17 @@
+@import b3.vertical.fieldConstructor
+
+@(currentUser: User, microPost: MicroPost, favorites: List[Favorite])(implicit messagesProvider: MessagesProvider, request: RequestHeader)
+
+@if(!favorites.exists(_.microPostId == microPost.id.get)) {
+  @b3.formCSRF(routes.FavoriteController.favorite(microPost.id.get)) {
+    @b3.submit('class -> "d-inline btn btn-primary btn-xs") {
+      @Messages("Favorite")
+    }
+  }
+} else {
+  @b3.formCSRF(routes.FavoriteController.unFavorite(microPost.id.get)) {
+    @b3.submit('class -> "d-inline btn btn-primary btn-xs") {
+      @Messages("UnFavorite")
+    }
+  }
+}
