@@ -10,7 +10,7 @@
     }
   } else {
     @b3.formCSRF(routes.FavoriteController.unFavorite(microPost.id.get)) {
-      @b3.submit('class -> "d-inline btn btn-primary btn-xs") {
+      @b3.submit('class -> "d-inline btn btn-warning btn-xs") {
         @Messages("UnFavorite")
       }
     }

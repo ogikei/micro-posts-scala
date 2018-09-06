@@ -28,7 +28,7 @@ class HomeController @Inject()(val userService: UserService,
   def index(page: Int): Action[AnyContent] = StackAction { implicit request =>
     val userOpt = loggedIn
     val favoriteIds: List[Long] =
-      if (userOpt.get.id.isDefined) {
+      if (userOpt.isDefined) {
         favoriteService.findByUserId(userOpt.get.id.get).get.map(_.microPostId)
       } else Nil
     userOpt
