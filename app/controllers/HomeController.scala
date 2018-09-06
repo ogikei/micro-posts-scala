@@ -30,7 +30,7 @@ class HomeController @Inject()(
 
   def index(page: Int): Action[AnyContent] = StackAction { implicit request =>
     val userOpt = loggedIn
-    val favariteIds = favoriteService.countByUserId(userOpt.get.id)
+    val favoriteIds = favoriteService.findById(userOpt.get.id.get).get.map(_.microPostId)
     userOpt
         .map { user =>
           microPostService
@@ -48,7 +48,7 @@ class HomeController @Inject()(
         }
         .getOrElse(
           Ok(views.html.index(
-            userOpt, postForm, PagedItems(Pagination(10, page), 0, Seq.empty[MicroPost]), Seq.empty[Long]))
+            userOpt, postForm, PagedItems(Pagination(10, page), 0, Seq.empty[MicroPost]), Nil))
         )
   }
 
