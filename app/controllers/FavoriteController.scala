@@ -1,18 +1,18 @@
 package controllers
 
 import java.time.ZonedDateTime
-import javax.inject._
+import javax.inject.{Inject, Singleton}
 
 import jp.t2v.lab.play2.auth.AuthenticationElement
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc._
 
-import models.UserFollow
-import services.{UserFollowService, UserService}
+import models.Favorite
+import services.{FavoriteService, UserService}
 
 @Singleton
-class UserFollowController @Inject()(val userFollowService: UserFollowService,
+class FavoriteController @Inject()(val favoriteService: FavoriteService,
     val userService: UserService,
     components: ControllerComponents)
     extends AbstractController(components)
@@ -20,12 +20,12 @@ class UserFollowController @Inject()(val userFollowService: UserFollowService,
         with AuthConfigSupport
         with AuthenticationElement {
 
-  def follow(userId: Long): Action[AnyContent] = StackAction { implicit request =>
+  def favorite(microPostId: Long): Action[AnyContent] = StackAction { implicit request =>
     val currentUser = loggedIn
     val now = ZonedDateTime.now()
-    val userFollow = UserFollow(None, currentUser.id.get, userId, now, now)
-    userFollowService
-        .create(userFollow)
+    val favorite = Favorite(None, currentUser.id.get, microPostId, now, now)
+    favoriteService
+        .create(favorite)
         .map { _ =>
           Redirect(routes.HomeController.index())
         }
@@ -38,10 +38,10 @@ class UserFollowController @Inject()(val userFollowService: UserFollowService,
         .getOrElse(InternalServerError(Messages("InternalError")))
   }
 
-  def unFollow(userId: Long): Action[AnyContent] = StackAction { implicit request =>
+  def releaseFavorite(microPostId: Long): Action[AnyContent] = StackAction { implicit request =>
     val currentUser = loggedIn
-    userFollowService
-        .deleteBy(currentUser.id.get, userId)
+    favoriteService
+        .deleteBy(currentUser.id.get, microPostId)
         .map { _ =>
           Redirect(routes.HomeController.index())
         }

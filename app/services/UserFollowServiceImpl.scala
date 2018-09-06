@@ -1,12 +1,12 @@
 package services
 
 import javax.inject.Singleton
+import scala.util.Try
 
-import models.{PagedItems, User, UserFollow}
 import scalikejdbc._
 import skinny.Pagination
 
-import scala.util.Try
+import models.{PagedItems, User, UserFollow}
 
 @Singleton
 class UserFollowServiceImpl extends UserFollowService {

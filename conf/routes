@@ -1,15 +1,18 @@
-GET         /                                controllers.HomeController.index(page: Int ?= 1)
-GET         /signup                          controllers.SignUpController.index
-POST        /signup/register                 controllers.SignUpController.register
-GET         /auth                            controllers.AuthController.index
-POST        /auth/login                      controllers.AuthController.login
-POST        /auth/logout                     controllers.AuthController.logout
-GET         /users                           controllers.UsersController.index(page: Int ?= 1)
-GET         /users/:id                       controllers.UsersController.show(id: Long, page: Int)
-GET         /users/:userId/followers         controllers.UsersController.getFollowers(userId: Long, page: Int)
-GET         /users/:userId/followings        controllers.UsersController.getFollowings(userId: Long, page: Int)
-POST        /users/:userId/follow            controllers.UserFollowController.follow(userId: Long)
-POST        /users/:userId/unfollow          controllers.UserFollowController.unFollow(userId: Long)
-POST        /posts                           controllers.PostController.post(page: Int ?= 1)
-POST        /posts/:id/delete                controllers.PostController.delete(id: Long, page: Int ?= 1)
-GET         /assets/*file                    controllers.Assets.versioned(path="/public", file: Asset)
+GET         /                                          controllers.HomeController.index(page: Int ?= 1)
+GET         /signup                                    controllers.SignUpController.index
+POST        /signup/register                           controllers.SignUpController.register
+GET         /auth                                      controllers.AuthController.index
+POST        /auth/login                                controllers.AuthController.login
+POST        /auth/logout                               controllers.AuthController.logout
+GET         /users                                     controllers.UsersController.index(page: Int ?= 1)
+GET         /users/:id                                 controllers.UsersController.show(id: Long, page: Int)
+GET         /users/:userId/followers                   controllers.UsersController.getFollowers(userId: Long, page: Int)
+GET         /users/:userId/followings                  controllers.UsersController.getFollowings(userId: Long, page: Int)
+GET         /favorite/:id                              controllers.FavoritesController.show(id: Long, page: Int ?= 1)
+POST        /users/:userId/follow                      controllers.UserFollowController.follow(userId: Long)
+POST        /users/:userId/unfollow                    controllers.UserFollowController.unFollow(userId: Long)
+POST        /users/:microPostId/favorite               controllers.FavoriteController.favorite(microPostId: Long)
+POST        /users/:microPostId/releaseFavorite        controllers.FavoriteController.releaseFavorite(microPostId: Long)
+POST        /posts                                     controllers.PostController.post(page: Int ?= 1)
+POST        /posts/:id/delete                          controllers.PostController.delete(id: Long, page: Int ?= 1)
+GET         /assets/*file                              controllers.Assets.versioned(path="/public", file: Asset)
