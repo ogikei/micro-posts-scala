@@ -5,7 +5,7 @@
 <ul class="media-list">
 
   @for(micropost <- microPosts.items; favoriteItem <- favorites) {
-    @if(micropost.id == favoriteItem.microPostId) {
+    @if(micropost.id.get == favoriteItem.microPostId) {
       <li class="media">
         <div class="media-left">
           <img class="media-object img-rounded" src="@common.gravatarUrl(micropost.user.get.email)?s=50&amp;r=g&amp;d=identicon" alt="">
