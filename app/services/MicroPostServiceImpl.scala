@@ -1,7 +1,7 @@
 package services
 
 import javax.inject.Singleton
-import models.{MicroPost, PagedItems, UserFollow}
+import models.{Favorite, MicroPost, PagedItems, UserFollow}
 import scalikejdbc._
 import skinny.Pagination
 
@@ -22,26 +22,47 @@ class MicroPostServiceImpl extends MicroPostService {
       implicit dbSession: DBSession
   ): Try[PagedItems[MicroPost]] =
     countBy(userId).map { size =>
-      PagedItems(pagination, size, findAllByWithLimitOffset(Seq(userId))(pagination))
+      PagedItems(pagination, size, findAllByFollowWithLimitOffset(Seq(userId))(pagination))
     }
 
   override def countBy(userId: Long)(implicit dbSession: DBSession): Try[Long] = Try {
     MicroPost.countBy(sqls.eq(MicroPost.defaultAlias.userId, userId))
   }
 
-  override def findAllByWithLimitOffset(pagination: Pagination, userId: Long)(
+  override def findAllByFollowWithLimitOffset(pagination: Pagination, userId: Long)(
       implicit dbSession: DBSession
   ): Try[PagedItems[MicroPost]] = Try {
     val followingIds: Seq[Long] =
       UserFollow.findAllBy(sqls.eq(UserFollow.defaultAlias.userId, userId)).map(_.followId)
     val size = MicroPost.countBy(sqls.in(MicroPost.defaultAlias.userId, userId +: followingIds))
-    PagedItems(pagination, size, findAllByWithLimitOffset(userId +: followingIds)(pagination))
+    PagedItems(pagination, size, findAllByFollowWithLimitOffset(userId +: followingIds)(pagination))
   }
 
-  private def findAllByWithLimitOffset(userIds: Seq[Long])(pagination: Pagination)(
+  private def findAllByFollowWithLimitOffset(userIds: Seq[Long])(pagination: Pagination)(
       implicit dbSession: DBSession
   ): Seq[MicroPost] = MicroPost.findAllByWithLimitOffset(
     sqls.in(MicroPost.defaultAlias.userId, userIds),
+    pagination.limit,
+    pagination.offset,
+    Seq(MicroPost.defaultAlias.id.desc)
+  )
+
+  override def findAllByFavoriteWithLimitOffset(pagination: Pagination, userId: Long)(
+      implicit dbSession: DBSession
+  ): Try[PagedItems[MicroPost]] = Try {
+    val favoriteMicroPostIds: Seq[Long] =
+      Favorite.findAllBy(sqls.eq(Favorite.defaultAlias.userId, userId)).map(_.microPostId)
+    val size = MicroPost.countBy(
+      sqls.in(MicroPost.defaultAlias.id, favoriteMicroPostIds))
+    PagedItems(
+      pagination, size, findAllByFavoriteWithLimitOffset(favoriteMicroPostIds)(pagination))
+  }
+
+  private def findAllByFavoriteWithLimitOffset(
+      favoriteMicroPostId: Seq[Long])(pagination: Pagination)(
+      implicit dbSession: DBSession
+  ): Seq[MicroPost] = MicroPost.findAllByWithLimitOffset(
+    sqls.in(MicroPost.defaultAlias.id, favoriteMicroPostId),
     pagination.limit,
     pagination.offset,
     Seq(MicroPost.defaultAlias.id.desc)

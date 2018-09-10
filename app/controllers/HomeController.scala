@@ -34,7 +34,7 @@ class HomeController @Inject()(val userService: UserService,
     userOpt
         .map { user =>
           microPostService
-              .findAllByWithLimitOffset(Pagination(10, page), user.id.get)
+              .findAllByFollowWithLimitOffset(Pagination(10, page), user.id.get)
               .map { pagedItems =>
                 Ok(views.html.index(userOpt, postForm, pagedItems, favoriteIds))
               }

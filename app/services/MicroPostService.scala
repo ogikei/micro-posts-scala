@@ -18,7 +18,11 @@ trait MicroPostService {
 
   def countBy(userId: Long)(implicit dbSession: DBSession = AutoSession): Try[Long]
 
-  def findAllByWithLimitOffset(pagination: Pagination, userId: Long)(
+  def findAllByFollowWithLimitOffset(pagination: Pagination, userId: Long)(
+      implicit dbSession: DBSession = AutoSession
+  ): Try[PagedItems[MicroPost]]
+
+  def findAllByFavoriteWithLimitOffset(pagination: Pagination, userId: Long)(
       implicit dbSession: DBSession = AutoSession
   ): Try[PagedItems[MicroPost]]
 

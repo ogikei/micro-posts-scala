@@ -23,7 +23,7 @@ class FavoritesController @Inject()(val userService: UserService,
     val favoriteIds = if (loggedIn.id.isDefined) {
       favoriteService.findByUserId(loggedIn.id.get).get.map(_.microPostId)
     } else Nil
-    microPostService.findAllByWithLimitOffset(
+    microPostService.findAllByFavoriteWithLimitOffset(
       Pagination(pageSize = 10, pageNo = page), loggedIn.id.get)
         .map { microPosts =>
           Ok(views.html.favorite.index(loggedIn, microPosts, favoriteIds))

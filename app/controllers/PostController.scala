@@ -69,7 +69,7 @@ class PostController @Inject()(val userService: UserService,
         favoriteService.findByUserId(user.id.get).get.map(_.microPostId)
       } else Nil
     microPostService
-        .findAllByWithLimitOffset(Pagination(10, page), user.id.get)
+        .findAllByFollowWithLimitOffset(Pagination(10, page), user.id.get)
         .map { pagedItems =>
           BadRequest(views.html.index(Some(user), formWithErrors, pagedItems, favoriteIds))
         }
