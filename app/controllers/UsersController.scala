@@ -36,18 +36,13 @@ class UsersController @Inject()(val userService: UserService,
   }
 
   def show(userId: Long, page: Int) = StackAction { implicit request =>
-    val triedUserOpt = userService.findById(userId)
-    val triedUserFollows = userFollowService.findById(loggedIn.id.get)
     val pagination = Pagination(10, page)
-    val triedMicroPosts = microPostService.findByUserId(pagination, userId)
-    val triedFollowingsSize = userFollowService.countByUserId(userId)
-    val triedFollowersSize = userFollowService.countByFollowId(userId)
     (for {
-      userOpt <- triedUserOpt
-      userFollows <- triedUserFollows
-      microPosts <- triedMicroPosts
-      followingsSize <- triedFollowingsSize
-      followersSize <- triedFollowersSize
+      userOpt <-  userService.findById(userId)
+      userFollows <- userFollowService.findById(loggedIn.id.get)
+      microPosts <- microPostService.findByUserId(pagination, userId)
+      followingsSize <- userFollowService.countByUserId(userId)
+      followersSize <- userFollowService.countByFollowId(userId)
     } yield {
       userOpt.map { user =>
         Ok(views.html.users.show(loggedIn, user, userFollows, microPosts, followingsSize, followersSize))
